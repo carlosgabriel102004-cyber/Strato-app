@@ -15,6 +15,7 @@ const SOURCE_CONFIG: Record<string, { label: string; color: string }> = {
   nubank_cc: { label: 'Nubank Cartão', color: '#D4373F' },
   picpay_pf_pix: { label: 'PicPay PF', color: '#15CE6A' },
   picpay_pj_pix: { label: 'PicPay PJ', color: '#0A442E' },
+  mercado_pago: { label: 'Mercado Pago', color: '#009EE3' },
   manual: { label: 'Manual', color: '#6366f1' }
 };
 

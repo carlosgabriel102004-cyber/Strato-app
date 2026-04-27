@@ -9,12 +9,13 @@ interface TransactionListProps {
   onEdit: (tx: Transaction) => void;
 }
 
-const SOURCE_LABELS: Record<SourceKey, string> = {
+const SOURCE_LABELS: Record<string, string> = {
   nubank_pj_pix: 'Nubank PJ',
   nubank_pf_pix: 'Nubank PF',
   nubank_cc: 'Nubank CC',
   picpay_pf_pix: 'PicPay PF',
   picpay_pj_pix: 'PicPay PJ',
+  mercado_pago: 'Mercado Pago',
   manual: 'Manual'
 };
 

@@ -1,5 +1,5 @@
 
-export type SourceKey = 'nubank_pj_pix' | 'nubank_pf_pix' | 'nubank_cc' | 'picpay_pf_pix' | 'picpay_pj_pix' | 'manual';
+export type SourceKey = 'nubank_pj_pix' | 'nubank_pf_pix' | 'nubank_cc' | 'picpay_pf_pix' | 'picpay_pj_pix' | 'manual' | 'mercado_pago';
 
 export interface SourceConfig {
   id: SourceKey;

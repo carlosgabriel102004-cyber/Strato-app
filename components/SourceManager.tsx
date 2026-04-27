@@ -18,6 +18,7 @@ const SourceManager: React.FC<SourceManagerProps> = ({ onClose, currentSources, 
     { key: 'nubank_cc', label: 'Nubank Cartão', icon: 'fas fa-credit-card', color: 'text-purple-700' },
     { key: 'picpay_pf_pix', label: 'PicPay PF (Pix)', icon: 'fas fa-wallet', color: 'text-emerald-500' },
     { key: 'picpay_pj_pix', label: 'PicPay PJ (Pix)', icon: 'fas fa-store', color: 'text-emerald-600' },
+    { key: 'mercado_pago', label: 'Mercado Pago', icon: 'fas fa-handshake', color: 'text-sky-500' },
   ];
 
   const handleSave = () => {
