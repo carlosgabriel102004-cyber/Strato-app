@@ -80,9 +80,11 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, ignored
                         ? 'bg-slate-100 text-slate-400 border-slate-200' 
                         : t.source === 'manual' 
                           ? 'bg-amber-50 text-amber-700 border-amber-100' 
-                          : t.source.includes('nubank') 
-                            ? 'bg-purple-50 text-purple-700 border-purple-100' 
-                            : 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                          : t.source === 'mercado_pago' 
+                            ? 'bg-sky-50 text-sky-700 border-sky-100' 
+                            : t.source.includes('nubank') 
+                              ? 'bg-purple-50 text-purple-700 border-purple-100' 
+                              : 'bg-emerald-50 text-emerald-700 border-emerald-100'
                     }`}>
                       {t.source === 'manual' ? t.manualSourceLabel : SOURCE_LABELS[t.source]}
                     </span>

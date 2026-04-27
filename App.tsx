@@ -174,10 +174,24 @@ const App: React.FC = () => {
     for (let i = startIdx; i < lines.length; i++) {
       const parts = parseCSVLine(lines[i], separator);
       if (parts.length < 3) continue;
+
       const dateStr = parts[0];
-      let amount = parseValue(parts[1]);
-      const desc = parts[2];
-      const cat = parts[3] || 'Geral';
+      let valStr = parts[1];
+      let descIdx = 2;
+      let catIdx = 3;
+
+      // Heuristic to fix unquoted numbers with comma (e.g. -48,24 split into "-48" and "24")
+      if (parts.length >= 4 && separator === ',' && /^-?(?:R\$\s*)?\d+(?:\.\d{3})*$/.test(valStr.trim()) && /^\d{1,2}$/.test(parts[2].trim())) {
+        valStr = valStr + ',' + parts[2];
+        descIdx = 3;
+        catIdx = 4;
+      }
+
+      let amount = parseValue(valStr);
+      let desc = parts.slice(descIdx).join(separator); // Re-join the rest as description
+      // Note: The user said "sempre 3 colunas", so any extra commas likely belong to the description
+      const cat = 'Geral'; 
+
       if (isNaN(amount) || !dateStr || !desc) continue;
       if (source === 'nubank_cc') {
         if (desc.toLowerCase().includes('pagamento recebido')) continue;

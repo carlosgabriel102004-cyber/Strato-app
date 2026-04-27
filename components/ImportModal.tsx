@@ -101,10 +101,28 @@ const ImportModal: React.FC<ImportModalProps> = ({ onClose, onImport }) => {
       const maxNeededIdx = Math.max(indices.date, indices.val, indices.desc);
       if (parts.length <= maxNeededIdx) continue;
 
+      let valStr = parts[indices.val];
+      let descIdx = indices.desc;
+      let catIdx = indices.cat;
+
+      if (parts.length > maxNeededIdx + 1 && separator === ',' && /^-?(?:R\$\s*)?\d+(?:\.\d{3})*$/.test(valStr.trim()) && /^\d{1,2}$/.test(parts[indices.val + 1].trim())) {
+        valStr = valStr + ',' + parts[indices.val + 1];
+        // Shift description and category indices if they came after value
+        if (indices.desc > indices.val) descIdx++;
+        if (indices.cat > indices.val) catIdx++;
+      }
+
       const dateStr = parts[indices.date];
-      const amount = parseValue(parts[indices.val]);
-      const desc = parts[indices.desc];
-      const cat = (indices.cat !== -1 && parts[indices.cat]) ? parts[indices.cat] : 'Geral';
+      const amount = parseValue(valStr);
+      let desc = parts[descIdx];
+      
+      // If we know there are only 3 columns, everything after descIdx is probably just the rest of description due to commas in description.
+      // E.g. "padaria, com vitoria"
+      if (descIdx === Math.max(indices.date, indices.val, indices.desc) || (descIdx === 3 && maxNeededIdx === 2)) {
+         desc = parts.slice(descIdx).join(separator);
+      }
+
+      const cat = (catIdx !== -1 && parts[catIdx]) ? parts[catIdx] : 'Geral';
 
       // Validation check
       if (isNaN(amount) || !dateStr || !desc) continue;
