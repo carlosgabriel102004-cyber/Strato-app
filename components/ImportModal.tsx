@@ -29,6 +29,31 @@ const ImportModal: React.FC<ImportModalProps> = ({ onClose, onImport }) => {
     return parseFloat(clean);
   };
 
+  const parseCSVLine = (line: string, separator: string): string[] => {
+    const result: string[] = [];
+    let current = '';
+    let inQuotes = false;
+    
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      if (char === '"') {
+        if (inQuotes && i + 1 < line.length && line[i + 1] === '"') {
+          current += '"';
+          i++;
+        } else {
+          inQuotes = !inQuotes;
+        }
+      } else if (char === separator && !inQuotes) {
+        result.push(current.trim());
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+    result.push(current.trim());
+    return result;
+  };
+
   const processCSV = (text: string) => {
     const rawLines = text.split(/\r?\n/).map(l => l.trim()).filter(line => line.length > 0);
     if (rawLines.length === 0) return [];
@@ -44,7 +69,7 @@ const ImportModal: React.FC<ImportModalProps> = ({ onClose, onImport }) => {
 
     // Scan the first few lines to see if there's an explicit header row
     for (let i = 0; i < Math.min(rawLines.length, 10); i++) {
-      const parts = rawLines[i].split(separator).map(p => p.toLowerCase().trim().replace(/^"|"$/g, ''));
+      const parts = parseCSVLine(rawLines[i], separator).map(p => p.toLowerCase());
       
       const dIdx = parts.findIndex(p => p.includes('data'));
       const vIdx = parts.findIndex(p => p.includes('valor') || p.includes('montante') || p.includes('pago') || p.includes('recebido') || p.includes('quantia'));
@@ -70,7 +95,7 @@ const ImportModal: React.FC<ImportModalProps> = ({ onClose, onImport }) => {
 
     for (let i = startIdx; i < rawLines.length; i++) {
       const line = rawLines[i].trim();
-      const parts = line.split(separator).map(p => p.replace(/^"|"$/g, '').trim());
+      const parts = parseCSVLine(line, separator);
       
       // Basic validation: must have at least the columns we need
       const maxNeededIdx = Math.max(indices.date, indices.val, indices.desc);

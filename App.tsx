@@ -135,17 +135,44 @@ const App: React.FC = () => {
     return parseFloat(clean);
   };
 
+  const parseCSVLine = (line: string, separator: string): string[] => {
+    const result: string[] = [];
+    let current = '';
+    let inQuotes = false;
+    
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      if (char === '"') {
+        if (inQuotes && i + 1 < line.length && line[i + 1] === '"') {
+          current += '"';
+          i++;
+        } else {
+          inQuotes = !inQuotes;
+        }
+      } else if (char === separator && !inQuotes) {
+        result.push(current.trim());
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+    result.push(current.trim());
+    return result;
+  };
+
   const processCSV = (text: string, source: SourceKey): Transaction[] => {
     const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
     const result: Transaction[] = [];
     if (lines.length === 0) return [];
     
     const separator = lines[0].includes(';') ? ';' : ',';
-    const hasHeader = isNaN(parseValue(lines[0].split(separator)[1]));
+    
+    const firstLineParts = parseCSVLine(lines[0], separator);
+    const hasHeader = isNaN(parseValue(firstLineParts[1]));
     const startIdx = hasHeader ? 1 : 0;
 
     for (let i = startIdx; i < lines.length; i++) {
-      const parts = lines[i].split(separator).map(p => p.replace(/^"|"$/g, '').trim());
+      const parts = parseCSVLine(lines[i], separator);
       if (parts.length < 3) continue;
       const dateStr = parts[0];
       let amount = parseValue(parts[1]);
